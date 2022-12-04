@@ -69,7 +69,7 @@ toolinstall() {
 
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
-   if [$GCC -eq 1]; then
+   if [ $GCC -eq 1 ]; then
       echo -e "| ${CNOTE}Downloading GCC...${CN} |"
       wget -nv https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz || die "${CERR}Downloading failed${CN}"
       echo -e "| ${CNOTE}Downloaded GCC successfully${CN} |"
