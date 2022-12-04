@@ -39,14 +39,14 @@ help() {
 
 toolinstall() {
    GCC=0
-   VERB=0
+   VERB=
    conf=
    version=12.2.0
-   binver=2.39
+   bin=2.39
    linux=6.0.9
    libc=2.36
    while :; do
-      case $@ in
+      case $2 in
          -v|--verbose)
             VERB=1;;
          --configure=?*)
@@ -69,7 +69,7 @@ toolinstall() {
 
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
-   if [$GCC = 1]; then
+   if [$GCC -eq 1]; then
       echo -e "| ${CNOTE}Downloading GCC...${CN} |"
       wget -nv https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz || die "${CERR}Downloading failed${CN}"
       echo -e "| ${CNOTE}Downloaded GCC successfully${CN} |"
@@ -91,10 +91,10 @@ toolinstall() {
    else
       start1=$SECONDS
       echo -e "| ${CNOTE}Downloading GCC Toolchain...${CN} |"
-      wget https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz
-      wget https://ftp.gnu.org/gnu/binutils/binutils-$bin/binutils-$bin.tar.gz
-      wget https://www.kernel.org/pub/linux/kernel/v6.x/linux-$linux.tar.xz
-      wget https://ftp.gnu.org/gnu/glibc/glibc-$libc/glibc-$libc.tar.gz
+      wget -nv https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz
+      wget -nv https://ftp.gnu.org/gnu/binutils/binutils-$bin/binutils-$bin.tar.gz
+      wget -nv https://www.kernel.org/pub/linux/kernel/v6.x/linux-$linux.tar.xz
+      wget -nv https://ftp.gnu.org/gnu/glibc/glibc-$libc/glibc-$libc.tar.gz
       echo -e "| ${CNOTE}Downloaded GCC Toolchain successfully${CN} |"
       echo -e "| ${CNOTE}Extracting GCC Toolchain...${CN} |"
       for f in *.tar*; do tar xf $f; done
