@@ -17,31 +17,6 @@ die() {
    exit 1
 }
 
-while :; do
-   case $1 in
-      -h | --help | -\?)
-         help
-         exit;;
-      -i | --install)
-         toolinstall
-         exit;;
-      -u | --uninstall)
-         tooluninstall
-         exit;;
-      -v | --version)
-         echo "1.0.0-a1"
-         exit;;
-      --)
-         shift
-         break;;
-      -?*)
-         echo -e "${CWARN}WARN${CN}: Unknown option (ignored)";;
-      *)
-         break;;
-   esac
-   shift
-done
-
 help() {
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
@@ -177,3 +152,28 @@ toolinstall() {
       echo -e "${CNOTE}gcc${CN}: Done in $duration"
    fi
 }
+
+while :; do
+   case $1 in
+      -h | --help | -\?)
+         help
+         exit;;
+      -i | --install)
+         toolinstall
+         exit;;
+      -u | --uninstall)
+         tooluninstall
+         exit;;
+      -v | --version)
+         echo "1.0.0-a1"
+         exit;;
+      --)
+         shift
+         break;;
+      -?*)
+         echo -e "${CWARN}WARN${CN}: Unknown option (ignored)";;
+      *)
+         break;;
+   esac
+   shift
+done
