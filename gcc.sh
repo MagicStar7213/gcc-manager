@@ -113,6 +113,7 @@ gccinstall() {
       echo -e "${BOLD}GCC is installed${CN}"
       exit
    else
+      start1=$SECONDS
       echo -e "| ${CNOTE}Downloading GCC Toolchain...${CN} |"
       wget https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz
       wget https://ftp.gnu.org/gnu/binutils/binutils-$bin/binutils-$bin.tar>
