@@ -3,9 +3,10 @@
 ####################### GCC Toolchain Manager Script ########################
 #############################################################################
 
-CERR='\033[1;31m\033[1m'
+CERR='\033[0;31m'
 CWARN='\033[1;33m\033[1m'
 CNOTE='\033[1;36m\033[1m'
+CPURP='\033[0;35m\033[1m'
 CN='\033[0m'
 
 BOLD='\033[1m'
@@ -68,22 +69,22 @@ toolinstall() {
 
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
-   if [GCC = 1]; then
+   if [$GCC = 1]; then
       echo -e "| ${CNOTE}Downloading GCC...${CN} |"
-      wget -nv https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz
+      wget -nv https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz || die "${CERR}Downloading failed${CN}"
       echo -e "| ${CNOTE}Downloaded GCC successfully${CN} |"
       echo -e "| ${CNOTE}Extracting GCC...${CN} |"
       tar xzf gcc-$version.tar.gz
       echo -e "| ${CNOTE}Extracted GCC successfully${CN} |"
       cd gcc-$version
       echo -e "| ${CNOTE}Configuring GCC...${CN} |"
-      ./configure $conf || die "| ${CERR}Configuring GCC failed${CN} |"
+      ./configure $conf || die "${CERR}Configuring GCC failed${CN}"
       echo -e "| ${CNOTE}Configured GCC successfully${CN} |"
-      echo -e "| ${CNOTE}Building GCC... ${CN}(this will take some time) |"
-      make -j$(nproc)
+      echo -e "| ${CNOTE}Building GCC... ${CN} |"
+      make -j$(nproc) || die "${CERR}Building failed"
       echo -e "| ${CNOTE}Built GCC successfully ${CN}|"
       echo -e "| ${CNOTE}Installing GCC...${CN} |"
-      make install
+      make install || die "${CERR}Installing failed${CN}"
       echo -e "| ${CNOTE}Installed GCC${CN} |"
       echo -e "${BOLD}GCC is installed${CN}"
       exit
@@ -98,9 +99,9 @@ toolinstall() {
       echo -e "| ${CNOTE}Extracting GCC Toolchain...${CN} |"
       for f in *.tar*; do tar xf $f; done
       echo -e "| ${CNOTE}Extracted GCC Toolchain successfully${CN} |"
-      echo -e "|  ${CN}(this will take some time) |"
+      echo -e "|  ${CNOTE}Buiding GCC Toolchain...${CN} |"
       start=$SECONDS
-      mkdir build-binutils
+      mkdir -p build-binutils
       cd build-binutils
       echo -e "${CNOTE}binutils${CN}: Configuring..."
       ../binutils-$bin/configure $conf --disable-multilib || die "${CNOTE}binutils${CN}: \033[1;31mConfiguring failed${CN}"
@@ -116,40 +117,40 @@ toolinstall() {
       echo -e "${CNOTE}binutils${CN}: Done in ${duration}s"
       start=$SECONDS
       cd linux-$linux
-      echo -e "${CNOTE}linux-headers${CN}: Configuring..."
-      make menuconfig || die "${CNOTE}linux-headers${CN}: \033[0;31mConfiguring failed"
-      echo -e "${CNOTE}linux-headers${CN}: Configuring done"
-      echo -e "${CNOTE}linux-headers${CN}: Building and installing..."
-      make headers_install || die "${CNOTE}linux-headers${CN}: \033[0;31mBuilding failed"
-      echo -e "${CNOTE}linux-headers${CN}: Building and installing done"
+      echo -e "${CPURP}linux-headers${CN}: Configuring..."
+      make menuconfig || die "${CPURP}linux-headers${CN}: \033[0;31mConfiguring failed"
+      echo -e "${CPURP}linux-headers${CN}: Configuring done"
+      echo -e "${CPURP}linux-headers${CN}: Building and installing..."
+      make headers_install || die "${CPURP}linux-headers${CN}: \033[0;31mBuilding failed"
+      echo -e "${CPURP}linux-headers${CN}: Building and installing done"
       cd ..
       duration=$(( SECONDS - start))
-      echo -e "${CNOTE}linux-headers${CN}: Done in $duration"
-      echo -e "${CNOTE}gcc${CN}: Starting..."
+      echo -e "${CPURP}linux-headers${CN}: Done in $duration"
+      echo -e "${CG}gcc${CN}: Starting..."
       start=$SECONDS
       mkdir -p build-gcc
       cd build-gcc
-      echo -e "${CNOTE}gcc:${CN} Configuring..."
+      echo -e "${CG}gcc:${CN} Configuring..."
       ../gcc-$version/configure --enable-languages=c,c++ --disable-multilib || die "${CNOTE}gcc:${CN} \033[0;31mConfiguring failed"
-      echo -e "${CNOTE}gcc${CN}: Configuring done"
-      echo -e "${CNOTE}gcc${CN}: Building..."
+      echo -e "${CG}gcc${CN}: Configuring done"
+      echo -e "${CG}gcc${CN}: Building..."
       if [ $(nproc) -le 4 ]; then
-         make all-gcc || die "${CNOTE}gcc:${CN} \033[0;31mBuilding failed${CN}"
+         make all-gcc || die "${CG}gcc:${CN} ${CERR}Building failed${CN}"
       else
          if [ $(nproc) -le 6 ]; then
-            make all-gcc -j2 || die "${CNOTE}gcc:${CN} \033[0;31mBuilding failed${CN}"
+            make all-gcc -j2 || die "${CG}gcc${CN}: ${CERR}Building failed${CN}"
          elif [ $(nproc) -le 10 ]; then
-            make all-gcc -j4 || die "${CNOTE}gcc:${CN} \033[0;31mBuilding failed${CN}"
+            make all-gcc -j4 || die "${CG}gcc${CN}: ${CERR}Building failed${CN}"
          else
-            make all-gcc -j$(($(nproc) / 2)) || die "${CNOTE}gcc:${CN} \033[0;31mBuilding failed${CN}"
+            make all-gcc -j$(($(nproc) / 2)) || die "${CG}gcc${CN}: ${CERR}Building failed${CN}"
          fi
       fi
-      echo -e "${CNOTE}gcc${CN}: Building done"
-      echo -e "${CNOTE}gcc${CN}: Installing..."
-      make install-gcc || die "${CNOTE}gcc:${CN} \033[0;31mInstalling failed${CN}"
-      echo -e "${CNOTE}gcc${CN}: Installing done"
+      echo -e "${CG}gcc${CN}: Building done"
+      echo -e "${CG}gcc${CN}: Installing..."
+      make install-gcc || die "${CG}gcc${CN}: ${CERR}Installing failed${CN}"
+      echo -e "${CG}gcc${CN}: Installing done"
       duration=$(( SECONDS - start))
-      echo -e "${CNOTE}gcc${CN}: Done in $duration"
+      echo -e "${CG}gcc${CN}: Done in $duration"
    fi
 }
 
