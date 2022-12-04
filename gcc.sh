@@ -3,14 +3,14 @@
 ####################### GCC Toolchain Manager Script ########################
 #############################################################################
 
-CERR=\033[1;31m\033[1m
-CWARN=\033[1;33m\033[1m
-CNOTE=\033[1;36m\033[1m
-CN=\033[0m
+CERR='\033[1;31m\033[1m'
+CWARN='\033[1;33m\033[1m'
+CNOTE='\033[1;36m\033[1m'
+CN='\033[0m'
 
-BOLD=\033[1m
-ITAL=\033[3m
-UNDER=\033[4m
+BOLD='\033[1m'
+ITAL='\033[3m'
+UNDER='\033[4m'
 
 die() {
    echo -e '%s\n' "$1" >&2
@@ -37,7 +37,7 @@ while :; do
       -?*)
          echo -e "${CWARN}WARN${CN}: Unknown option (ignored)";;
       *)
-         break
+         break;;
    esac
    shift
 done
@@ -61,7 +61,7 @@ help() {
    echo -e "${BOLD}Author: MagicStar7213${CN}"
 }
 
-gccinstall() {
+toolinstall() {
    GCC=0
    VERB=0
    conf=
@@ -69,7 +69,7 @@ gccinstall() {
    binver=2.39
    linux=6.0.9
    libc=2.36
-   while:; do
+   while :; do
       case $@ in
          -v|--verbose)
             VERB=1;;
@@ -79,7 +79,7 @@ gccinstall() {
             echo -e "${CERR}ERROR${CN}: '--configure' requires a non-empty argument"
             exit 1;;
          --gcc)
-            GCC=1
+            GCC=1;;
          --)
             shift
             break;;
@@ -116,7 +116,7 @@ gccinstall() {
       start1=$SECONDS
       echo -e "| ${CNOTE}Downloading GCC Toolchain...${CN} |"
       wget https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz
-      wget https://ftp.gnu.org/gnu/binutils/binutils-$bin/binutils-$bin.tar>
+      wget https://ftp.gnu.org/gnu/binutils/binutils-$bin/binutils-$bin.tar.gz
       wget https://www.kernel.org/pub/linux/kernel/v6.x/linux-$linux.tar.xz
       wget https://ftp.gnu.org/gnu/glibc/glibc-$libc/glibc-$libc.tar.gz
       echo -e "| ${CNOTE}Downloaded GCC Toolchain successfully${CN} |"
@@ -176,3 +176,4 @@ gccinstall() {
       duration=$(( SECONDS - start))
       echo -e "${CNOTE}gcc${CN}: Done in $duration"
    fi
+}
