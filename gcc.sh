@@ -151,6 +151,8 @@ toolinstall() {
       echo -e "${CG}gcc${CN}: Installing done"
       duration=$(( SECONDS - start))
       echo -e "${CG}gcc${CN}: Done in $duration"
+      echo -e "${CWARN}glibc${CN}: Starting..."
+      start=$SECONDS
    fi
 }
 
