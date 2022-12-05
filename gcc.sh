@@ -46,7 +46,7 @@ toolinstall() {
    linux=6.0.9
    libc=2.36
    while :; do
-      case "$2" in
+      case "$1" in
          -v|--verbose)
             VERB=1;;
          --configure=?*)
