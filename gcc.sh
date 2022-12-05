@@ -13,6 +13,9 @@ BOLD='\033[1m'
 ITAL='\033[3m'
 UNDER='\033[4m'
 
+GCC=0
+VERB=0
+
 die() {
    echo -e '%s\n' "$1" >&2
    exit 1
@@ -21,9 +24,11 @@ die() {
 help() {
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
-   echo 'Script syntax: gcc.sh [-h|--help; -i|--install; -u|--uninstall; -v|--version] [version] [--prefix=prefix, --configure="options", --gcc]'
+   echo 'Usage: gcc.sh [--gcc] [-h|--help; -i|--install; -u|--uninstall; -v|--version] [version]'
    echo
    echo "Options:"
+   echo
+   echo "   --gcc) Only installs compiler"
    echo
    echo "   -h|--help) Gives the current display"
    echo
@@ -31,41 +36,19 @@ help() {
    echo
    echo "   -u|--uninstall) Uninstalls the toolchain"
    echo
-   echo "   -v|--version) Displays script version"
+   echo "   -V|--version) Displays script version"
+   echo
+   echo "   -v|--verbose) Enables all output"
    echo
    echo
    echo -e "${BOLD}Author: MagicStar7213${CN}"
 }
 
 toolinstall() {
-   GCC=0
-   VERB=0
-   conf=
    version=12.2.0
    bin=2.39
    linux=6.0.9
    libc=2.36
-   while :; do
-      case "$1" in
-         -v|--verbose)
-            VERB=1;;
-         --configure=?*)
-            conf=${1#*=};;
-         --configure=)
-            echo -e "${CERR}ERROR${CN}: '--configure' requires a non-empty argument"
-            exit 1;;
-         --gcc)
-            GCC=1;;
-         --)
-            shift
-            break;;
-         -?*)
-            echo -e "${CWARN}WARN${CN}: Unknown option (ignored)";;
-         *)
-            break;;
-      esac
-      shift
-   done
 
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
@@ -158,6 +141,8 @@ toolinstall() {
 
 while :; do
    case $1 in
+      --gcc)
+         GCC=1;;
       -h | --help | -\?)
          help
          exit;;
@@ -167,7 +152,9 @@ while :; do
       -u | --uninstall)
          tooluninstall
          exit;;
-      -v | --version)
+      -v | --verbose)
+         VERB=1;;
+      -V | --version)
          echo "1.0.0-a1"
          exit;;
       --)
