@@ -13,7 +13,7 @@ BOLD='\033[1m'
 ITAL='\033[3m'
 UNDER='\033[4m'
 
-GCC=0
+GCC=
 VERB=0
 
 die() {
@@ -140,7 +140,7 @@ toolinstall() {
 }
 
 while :; do
-   case $1 in
+   case "$1" in
       --gcc)
          GCC=1;;
       -h | --help | -\?)
