@@ -15,6 +15,7 @@ UNDER='\033[4m'
 
 GCC=
 VERB=0
+PREFIX=/usr/local
 
 die() {
    echo -e '%s\n' "$1" >&2
@@ -49,7 +50,6 @@ toolinstall() {
    bin=2.39
    linux=6.0.9
    libc=2.36
-   PREFIX=/usr/local
 
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
@@ -221,9 +221,41 @@ tooluninstall() {
    echo -e "${BOLD}GCC Toolchain Manager Script${CN}"
    echo
    if [ $GCC -eq 1 ]; then
-      echo -e "${BOLD}Uninstalling GCC..."
+      echo -e "${BOLD}Uninstalling GCC...$CN"
       cd build-gcc
       start2=$SECONDS
+      sudo make uninstall -C gcc
+      sudo make uninstall -C libbacktrace
+      sudo make uninstall -C libcc1
+      sudo make uninstall -C lto-plugin
+      sudo make uninstall -C prev-gcc
+      sudo make uninstall -C prev-intl
+      sudo make uninstall -C prev-libbacktrace
+      sudo make uninstall -C prev-lto-plugin
+      sudo make uninstall -C prev-zlib
+      sudo make uninstall -C stage1-gcc
+      sudo make uninstall -C stage1-intl
+      sudo make uninstall -C stage1-libbacktrace
+      sudo make uninstall -C stage1-lto-plugin
+      sudo make uninstall -C stage1-zlib
+      sudo make uninstall -C zlib
+      sudo rm -r $PREFIX/bin/{c++,cpp,g++,gcc*,gcov*,lto-dump,${MACHTYPE}-c++,${MACHTYPE}-gcc*,${MACHTYPE}-g++}
+      sudo rm -r $PREFIX/include/c++
+      sudo rm -r $PREFIX/lib/gcc
+      sudo rm -r $PREFIX/lib64/{libasan.*,libasan_preinit.*,libatomic.*,libcc1.*,libgcc_s.*,libgomp.*,libitm.*,liblsan.*,liblsan_preinit.o,libquadmath.*,libsanitizer.*,libssp.*,libssp_nonshared.*,libstdc++.*,libstdc++fs.*,libsupc++.*,libtsan.*,libtsan_preinit.o,libubsan.*}
+      sudo rm -r $PREFIX/libexec/gcc
+      sudo rm -r $PREFIX/man/man1/{cpp.*,g++.*,gcc.*,gcov*,lto-*}
+      sudo rm -r $PREFIX/man/man7/{fsf-funding.7,gfdl.7,gpl.7}
+      sudo rm -r $PREFIX/share/{gcc-12.2.0,info/{dir,libgomp.info,libitm.info,libquadmath.info},locale/*,man/man1/{cpp.1,g++.1,gcc.1,gcov*,lto-*},man/man7/{fsf-funding.7,gfdl.7,gpl.7}}
+      duration2=$(( SECONDS - start2 ))
+      echo -e "${CG}Done$CN in ${duration2}s"
+      echo -e "${BOLD}GCC Uninstalled"
+   else
+      echo -e "${BOLD}Uninstalling GCC Toolchain.."
+      echo -e "${CG}gcc$CN: Uninstalling GCC..."
+      start1=$SECONDS
+      start=$SECONDS
+      cd build-gcc
       sudo make uninstall -C gcc
       sudo make uninstall -C libbacktrace
       sudo make uninstall -C libcc1
@@ -247,8 +279,24 @@ tooluninstall() {
       sudo rm -r $PREFIX/man/man1/{cpp.*,g++.*,gcc.*,gcov*,lto-*}
       sudo rm -r $PREFIX/man/man7/{fsf-funding.7,gfdl.7,gpl.7}
       sudo rm -r $PREFIX/share/{gcc-12.2.0,info/{dir,libgomp.info,libitm.info,libquadmath.info},locale/*,man/man1/{cpp.1,g++.1,gcc.1,gcov*,lto-*},man/man7/{fsf-funding.7,gfdl.7,gpl.7}}
-      echo -e "$BOLD GCC Uninstalled"
-   else
+      echo -e "${CG}gcc$CN: Uninstalling GCC done"
+      echo -e "${CNOTE}binutils$CN: Uninstalling Binutils..."
+      cd build-binutils
+      sudo make uninstall -C bfd
+      sudo make uninstall -C binutils
+      sudo make uninstall -C etc
+      sudo make uninstall -C gas
+      sudo make uninstall -C gprof
+      sudo make uninstall -C gprofng
+      sudo make uninstall -C intl
+      sudo make uninstall -C ld
+      sudo make uninstall -C libctf
+      sudo make uninstall -C opcodes
+      sudo make uninstall -C zlib
+      sudo rm -r $PREFIX/bin/{as,c++filt,ld,nm,strip}
+      sudo rm -r $PREFIX/lib/{bfd-plugins,gprofng}
+      echo -e "${CNOTE}binutils$CN: Uninstalling Binutils done"
+   fi
 }
 
 while :; do
